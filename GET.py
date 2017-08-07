@@ -12,7 +12,7 @@ def GETAll (name_fragment, type):
     # Obtaining results
     dictionaries = []
     results = []
-    objects = re.findall('\[\s+(([^\]]*?\n+[^\]]*?)*)\]', objects)[0][0]
+    objects = re.findall('\[\s+(([^\]]*\n*)*)\]', objects)[0][0]
     for object in objects.split(', '):
         dictionaries.append(ast.literal_eval(object))
     for dictionary in dictionaries:
