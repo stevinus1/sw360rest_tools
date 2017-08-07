@@ -1,6 +1,6 @@
 
 # Putting component data in dictionary structure
-def FormatComponentData (component):
+def format_component_data (component):
     default_dict = {
       "componentType": "OSS",
       "description": "",

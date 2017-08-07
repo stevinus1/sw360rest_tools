@@ -1,6 +1,6 @@
 import GET
 # Putting project data in dictionary structure
-def FormatVendorData (vendor):
+def format_vendor_data (vendor):
     if (not vendor.has_key("shortName")):
         print "Please specify a shortName for your vendor.\n\n"
         return 0

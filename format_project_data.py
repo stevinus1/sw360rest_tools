@@ -1,6 +1,6 @@
 
 # Putting project data in dictionary structure
-def FormatProjectData (project):
+def format_project_data (project):
     default_dict = {
         "description": "",
         "version": "",

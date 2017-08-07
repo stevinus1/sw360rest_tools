@@ -1,8 +1,8 @@
 import GET
 
 # Putting release data in dictionary structure
-def FormatReleaseData (release, component):
-    Component_Id = GET.GETId(component['name'], 'component')
+def format_release_data (release, component):
+    Component_Id = GET.get_id(component['name'], 'component')
     default_dict = {
         "componentId": Component_Id,
         "vendorId": "",

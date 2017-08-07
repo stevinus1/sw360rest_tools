@@ -3,8 +3,7 @@ They also require the python requests module.
 
 POST:
 
-Templates for adding different types, with required fields labelled:
-Users can't be added via the REST interface.
+POST requests can be made by creating a file containing formatted data for all the objects you want to add to sw360. Templates for adding different types, with required fields labelled are below.
 
 Component  
 {  
@@ -58,12 +57,14 @@ Vendor
   "url": "VENDOR_URL" (required)  
 }
 
+Users can't be added via the REST interface.
+
 GET:
 
-GETAll: Takes a name fragment and type as strings, and returns a list of dictionaries containing data about all objects of that type that contain that name fragment. Users can be retrieved using their emails.
+get_all: Takes a name fragment and type as strings, and returns a list of dictionaries containing data about all objects of that type that contain that name fragment. Users can be retrieved using their emails.
 
-GETId: Takes a name and a type as strings, and returns the string Id of that object (for releases, the script will also request version). Users can be retrieved using their emails.
+get_id: Takes a name and a type as strings, and returns the string Id of that object (for releases, the script will also request version). Users can be retrieved using their emails.
 
-GETField: Takes a name, field and a type as strings), and returns the specified field of that object (for releases, the script will also request version). The return type will be the type of that field. Users can be retrieved using their emails.
+get_field: Takes a name, field and a type as strings), and returns the specified field of that object (for releases, the script will also request version). The return type will be the type of that field. Users can be retrieved using their emails.
 
 

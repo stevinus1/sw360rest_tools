@@ -21,7 +21,7 @@ while successful_import == 0:
             sys.exit()
 
 # Returns a list of all objects of a given type that contain a given name fragment
-def GETAll (name_fragment, type):
+def get_all (name_fragment, type):
 
     # Making GET request
     url = "http://localhost:8091/api/" + type.lower() + "s"
@@ -53,10 +53,10 @@ def GETAll (name_fragment, type):
     return results
 
 # Returns the Id of an object of given type that matches a given name
-def GETId (name, type):
+def get_id (name, type):
     
     # Getting list of objects of that type in dict form
-    dictionaries = GETAll("", type)
+    dictionaries = get_all("", type)
     self = ""
 
     # Finding specified object
@@ -88,10 +88,10 @@ def GETId (name, type):
         return id
 
 # Returns a given field from an object of given type that matches a given name
-def GETField (name, type, field):
+def get_field (name, type, field):
 
     # Getting list of objects of that type in dict form
-    dictionaries = GETAll("", type)
+    dictionaries = get_all("", type)
     self = ""
 
     # Finding specified object and field

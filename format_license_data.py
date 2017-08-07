@@ -1,6 +1,6 @@
 
 # Putting license data in dictionary structure
-def FormatLicenseData (license):
+def format_license_data (license):
     default_dict = {
         "text": ""
         }

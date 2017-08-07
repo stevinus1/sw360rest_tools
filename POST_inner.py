@@ -1,5 +1,5 @@
 import subprocess, requests, sys, ast, os, re
-import FormatProjectData, FormatComponentData, FormatVendorData, FormatReleaseData, FormatLicenseData
+import format_project_data, format_component_data, format_vendor_data, format_release_data, format_license_data
 import GET, header
 
 # Reading in information
@@ -51,7 +51,7 @@ if (dicts == []):
 # Adding in any missing fields to dictionaries and making POST requests for projects
 for project in projects:
     url = "http://localhost:8091/api/projects"
-    if (FormatProjectData.FormatProjectData(project) == 1):
+    if (format_project_data.format_project_data(project) == 1):
         r = requests.post(url, headers=header.headers, json=project)
         if (r.status_code == 201):
             print project['name'] + " (Project)" + ": POST method was successful\n\n"
@@ -61,7 +61,7 @@ for project in projects:
 # Adding in any missing fields to dictionaries and making POST requests for vendors
 for vendor in vendors:
     url = "http://localhost:8091/api/vendors"
-    if (FormatVendorData.FormatVendorData(vendor) == 1):
+    if (format_vendor_data.format_vendor_data(vendor) == 1):
         r = requests.post(url, headers=header.headers, json=vendor)
         if (r.status_code == 201):
             print vendor['shortName'] + " (Vendor)" + ": POST method was successful\n\n"
@@ -71,7 +71,7 @@ for vendor in vendors:
 # Adding in any missing fields to dictionaries and making POST requests for components
 for component in components:
     url = "http://localhost:8091/api/components"
-    if (FormatComponentData.FormatComponentData(component) == 1):
+    if (format_component_data.format_component_data(component) == 1):
         r = requests.post(url, headers=header.headers, json=component)
         if (r.status_code == 201):
             print component['name'] + " (Component)" + ": POST method was successful\n\n"
@@ -80,7 +80,7 @@ for component in components:
 
 # Adding in any missing fields to dictionaries and making POST requests for releases
 if (releases != []):
-    stored_components = GET.GETAll('', 'component')
+    stored_components = GET.get_all('', 'component')
 for release in releases:
     url = "http://localhost:8091/api/releases"
     has_component = 0
@@ -91,7 +91,7 @@ for release in releases:
     if (has_component == 0):
         print "A release cannot exist independently of a component of the same name.\n\n"
         break
-    if (FormatReleaseData.FormatReleaseData(release, this_component) == 1):
+    if (format_release_data.format_release_data(release, this_component) == 1):
         r = requests.post(url, headers=header.headers, json=release)
         if (r.status_code == 201):
             print release['name'] + " (Release)" + ": POST method was successful\n\n"
@@ -101,7 +101,7 @@ for release in releases:
 # Adding in any missing fields to dictionaries and making POST requests for licenses
 for license in licenses:
     url = "http://localhost:8091/api/licenses"
-    if (FormatLicenseData.FormatLicenseData(license) == 1):
+    if (format_license_data.format_license_data(license) == 1):
         r = requests.post(url, headers=header.headers, json=license)
         if (r.status_code == 201):
             print license['shortName'] + " (License)" +  ": POST method was successful\n\n"
