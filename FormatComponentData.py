@@ -3,12 +3,11 @@
 def FormatComponentData (component):
     default_dict = {
       "componentType": "OSS",
+      "description": "",
       "ownerAccountingUnit": "",
       "ownerGroup": "",
       "roles": {},
-      "vendors": [],
-      "releases": [],
-      "moderators": []
+      "vendors": []
     }
     if (component.has_key("name")):
         for key in default_dict.keys():

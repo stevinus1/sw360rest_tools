@@ -1,7 +1,6 @@
 import subprocess, requests, sys, ast, os, re
 import FormatProjectData, FormatComponentData, FormatVendorData, FormatReleaseData, FormatLicenseData
-import GET
-import header
+import GET, header
 
 # Reading in information
 info_filepath = raw_input("What is the filepath for the information? ")
@@ -17,11 +16,9 @@ projects = []
 vendors = []
 releases = []
 licenses = []
-for item in info.split('}'):
-    if len(item) > 3:
-        items.append(item + '}')
+items = p = re.findall('(\{\s+(([^\}]*?\n+[^\}]*?)*)\})', info)
 for item in items:
-    dicts.append(ast.literal_eval(item))
+    dicts.append(ast.literal_eval(item[0]))
 for di in dicts:
     if di['type'].lower() == 'project':
         projects.append(di)
@@ -71,7 +68,8 @@ for component in components:
             print component['name'] + " (Component)" +  ": POST method was unsuccessful\n" + r.text + "\n\n"
 
 # Adding in any missing fields to dictionaries and making POST requests for releases
-stored_components = GET.GETAll('', 'component')
+if (releases != []):
+    stored_components = GET.GETAll('', 'component')
 for release in releases:
     url = "http://localhost:8091/api/releases"
     has_component = 0
@@ -95,6 +93,6 @@ for license in licenses:
     if (FormatLicenseData.FormatLicenseData(license) == 1):
         r = requests.post(url, headers=header.headers, json=license)
         if (r.status_code == 201):
-            print license['fullName'] + " (License)" +  ": POST method was successful\n\n"
+            print license['shortName'] + " (License)" +  ": POST method was successful\n\n"
         else:
-            print license['fullName'] + " (License)" + ": POST method was unsuccessful\n" + r.text + "\n\n"
+            print license['shortName'] + " (License)" + ": POST method was unsuccessful\n" + r.text + "\n\n"

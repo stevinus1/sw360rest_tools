@@ -52,6 +52,6 @@ Vendor
   "type": "vendor" (required),
   "fullName": "VENDOR_NAME" (required),
   "shortName": "V_N" (required),
-  "url": "www.vendor.com" (required)
+  "url": "VENDOR_URL" (required)
 }
 
