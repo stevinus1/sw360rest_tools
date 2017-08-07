@@ -60,10 +60,10 @@ Vendor
 
 GET:
 
-GETAll: Takes a name fragment and type as strings, and returns a list of dictionaries containing data about all objects of that type that contain that name fragment.
+GETAll: Takes a name fragment and type as strings, and returns a list of dictionaries containing data about all objects of that type that contain that name fragment. Users can be retrieved using their emails.
 
-GETId: Takes a name and a type as strings, and returns the string Id of that object (for releases, the script will also request version)
+GETId: Takes a name and a type as strings, and returns the string Id of that object (for releases, the script will also request version). Users can be retrieved using their emails.
 
-GETField: Takes a name, field and a type as strings), and returns the specified field of that object (for releases, the script will also request version). The return type will be the type of that field.
+GETField: Takes a name, field and a type as strings), and returns the specified field of that object (for releases, the script will also request version). The return type will be the type of that field. Users can be retrieved using their emails.
 
 
