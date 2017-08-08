@@ -34,53 +34,63 @@ def get_all (name_fragment, type):
     # Obtaining results
     results = []
     objects = json.JSONDecoder.decode(global_vars.decoder, r.text)
-    if ((type.lower() == 'component') or (type.lower() == 'project') or (type.lower() == 'release')):
-        for object in objects['_embedded']['sw360:'+type+'s']:
-            if (name_fragment.lower() in object['name'].lower()):
-                results.append(object)
+    if ((type.lower() == 'component') or (type.lower() == 'project')):
+        for sw360_object in objects['_embedded']['sw360:'+type+'s']:
+            if (name_fragment.lower() in sw360_object['name'].lower()):
+                results.append(get_object(sw360_object['name'], type))
+    elif (type.lower() == 'releases'):
+        for sw360_object in objects['_embedded']['sw360:'+type+'s']:
+            if (name_fragment.lower() in sw360_object['name'].lower()):
+                results.append(get_object(sw360_object['name'], type, sw360_object['version']))
     if ((type.lower() == 'license') or (type.lower() == 'vendor')):
-        for object in objects['_embedded']['sw360:'+type+'s']:
-            if (name_fragment.lower() in object['fullName'].lower()):
-                results.append(object)
+        for sw360_object in objects['_embedded']['sw360:'+type+'s']:
+            if (name_fragment.lower() in sw360_object['fullName'].lower()):
+                results.append(get_object(sw360_object['fullName'], type))
     elif (type.lower() == 'user'):
-        for object in objects['_embedded']['sw360:'+type+'s']:
-            if (name_fragment.lower() in object['email'].lower()):
-                results.append(object)
+        for sw360_object in objects['_embedded']['sw360:'+type+'s']:
+            if (name_fragment.lower() in sw360_object['email'].lower()):
+                results.append(get_object(sw360_object['email'], type))
     return results
 
 # Returns a single object in dictionary form of a given name that matches a given type
-def get_object (name, type):
+def get_object (name, type, version = None):
     
     # Getting id of that object and making GET request
-    id = get_id(name, type)
+    id = get_id(name, type, version)
     if (id is None):
         return None
     url = "http://localhost:8091/api/" + type.lower() + "s/" + id
     r = requests.get(url, headers=global_vars.headers)
-    if (r.status_code == 200):
-        get_text = r.text
-    else:
+    if (r.status_code != 200):
         print "GET method was unsuccessful.\n" + r.text
-        return
+        return None
     if (type.lower() == 'license'):
-        return format_license_data.format_get(get_text)
+        return format_license_data.format_get(r.text)
     elif (type.lower() == 'vendor'):
-        return format_vendor_data.format_get(get_text)
+        return format_vendor_data.format_get(r.text)
     elif (type.lower() == 'release'):
-        return format_release_data.format_get(get_text)
+        return format_release_data.format_get(r.text)
     elif (type.lower() == 'project'):
-        return format_project_data.format_get(get_text)
+        return format_project_data.format_get(r.text)
     elif (type.lower() == 'component'):
-        return format_component_data.format_get(get_text)
+        return format_component_data.format_get(r.text)
+    elif (type.lower() == 'user'):
+        return format_user_data.format_get(r.text)
     else:
         print "Please enter a valid type."
         return None
     
 # Returns the Id of an object of given type that matches a given name
-def get_id (name, type):
+def get_id (name, type, version = None):
     
-    # Getting list of objects of that type in dict form
-    dictionaries = get_all("", type)
+    # Getting list of objects of that type
+    url = "http://localhost:8091/api/" + type.lower() + "s"
+    r = requests.get(url, headers=global_vars.headers)
+    if (r.status_code != 200):
+        print "GET method was unsuccessful.\n" + r.text
+        return None
+    dictionaries = json.JSONDecoder.decode(global_vars.decoder,r.text)
+    dictionaries = dictionaries['_embedded']['sw360:'+type+'s']
     self = ""
 
     # Finding specified object
@@ -89,7 +99,8 @@ def get_id (name, type):
             if(dictionary['fullName'].lower() == name.lower()):
                 self = str(dictionary['_links'])
     elif (type.lower() == 'release'):
-        version = raw_input("Please specify the version of your release: ")
+        if (version is None):
+            version = raw_input("Please specify the version of your release: ")
         for dictionary in dictionaries:
             if(dictionary['name'].lower() == name.lower()) and (dictionary['version'].lower() == version.lower()):
                 self = str(dictionary['_links'])
@@ -112,10 +123,10 @@ def get_id (name, type):
         return id
 
 # Returns a given field from an object of given type that matches a given name
-def get_field (name, type, field):
+def get_field (name, type, field, version = None):
 
     # Getting object as dictionary
-    object = get_object(name, type)
+    object = get_object(name, type, version)
 
     # Get field
     try:

@@ -22,11 +22,12 @@ def format_post (component):
 def format_get(text):
     dictionary = json.JSONDecoder.decode(global_vars.decoder, text)
     dictionary['createdBy'] = dictionary['_embedded']['createdBy']['email']
-    release_ids = []
-    for release in dictionary['_embedded']['releases']:
-        release_id = re.search(global_vars.id_pattern, str(release))
-        release_ids.append(release_id.group(1))
-    dictionary['releases'] = release_ids
+    if dictionary.has_key('releases'):
+        release_ids = []
+        for release in dictionary['_embedded']['releases']:
+            release_id = re.search(global_vars.id_pattern, str(release))
+            release_ids.append(release_id.group(1))
+        dictionary['releases'] = release_ids
     del dictionary['_embedded']
     del dictionary['_links']
     return dictionary

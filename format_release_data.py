@@ -34,7 +34,8 @@ def format_get(text):
         str(dictionary['_embedded']['vendor']))
         dictionary['vendorId'] = vendor_id_match.group(1)
     del dictionary['_links']
-    del dictionary['_embedded']
+    if dictionary.has_key('_embedded'):
+        del dictionary['_embedded']
     return dictionary
     
 
