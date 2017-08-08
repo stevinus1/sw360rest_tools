@@ -1,5 +1,6 @@
-These scripts require the sw360 REST interface to run.
-They also require the python requests module.
+# sw360 rest Example Client
+
+These are scripts intended to be used to automate workflow when using the sw360 REST interface. The scripts require the sw360 REST interface to run, as well as the python requests module.
 
 POST:
 
