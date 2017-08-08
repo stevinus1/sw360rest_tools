@@ -1,6 +1,7 @@
+import global_vars, json
 
 # Putting project data in dictionary structure
-def format_project_data (project):
+def format_post (project):
     default_dict = {
         "description": "",
         "version": "",
@@ -21,3 +22,12 @@ def format_project_data (project):
     else:
         print "Please specify a name for your project."
         return 0
+
+# Interpreting GET request text
+def format_get(text):
+    dictionary = json.JSONDecoder.decode(global_vars.decoder, text)
+    dictionary['createdBy'] = dictionary['_embedded']['createdBy']['email']
+    del dictionary['_embedded']
+    del dictionary['_links']
+    return dictionary
+    

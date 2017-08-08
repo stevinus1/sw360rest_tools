@@ -1,6 +1,7 @@
+import json
 
 # Putting license data in dictionary structure
-def format_license_data (license):
+def format_post (license):
     default_dict = {
         "text": ""
         }
@@ -14,3 +15,10 @@ def format_license_data (license):
         for key in default_dict.keys():
             license.setdefault(key, default_dict[key])
         return 1
+
+# Interpreting GET request text
+def format_get(text):
+    decoder = json.JSONDecoder()
+    dictionary = json.JSONDecoder.decode(global_vars.decoder, text)
+    del dictionary['_links']
+    return dictionary

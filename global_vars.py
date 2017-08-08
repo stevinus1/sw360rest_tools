@@ -1,10 +1,9 @@
-# Wrapper file
+import re, json, sys
 
-import sys
 successful_import = 0
 while successful_import == 0:
     try:
-        import header, POST_inner
+        import header
         successful_import = 1
     except OSError as err:
         print err.message + "\n"
@@ -20,15 +19,12 @@ while successful_import == 0:
             sys.stdin.readline()
         except KeyboardInterrupt:
             sys.exit()
+            
+# Useful global variables
 
-while True:
-    try:
-        print "Press enter to read in from more files, CTRL-C to exit."
-        sys.stdin.readline()
-        reload(POST_inner)
-    except OSError as err:
-        print err.message
-    except IOError as err:
-        print err.message
-    except KeyboardInterrupt:
-        sys.exit()
+global id_pattern
+id_pattern = '''["|']http://.*/([^\s]*)["|']'''
+global headers
+headers = header.headers
+global decoder
+decoder = json.JSONDecoder()

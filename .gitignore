@@ -6,3 +6,4 @@ format_project_data.pyc
 format_release_data.pyc
 format_vendor_data.pyc
 header.pyc
+global_vars.pyc

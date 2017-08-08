@@ -4,7 +4,7 @@ These are scripts intended to be used to automate workflow when using the sw360 
 
 POST:
 
-POST requests can be made by creating a file containing formatted data for all the objects you want to add to sw360. Templates for adding different types, with required fields labelled are below.
+POST requests can be made by creating a file containing formatted data for all the objects you want to add to sw360. Templates for adding different types, with required fields labelled, are below.
 
 Component  
 {  
@@ -62,10 +62,12 @@ Users can't be added via the REST interface.
 
 GET:
 
-get_all: Takes a name fragment and type as strings, and returns a list of dictionaries containing data about all objects of that type that contain that name fragment. Users can be retrieved using their emails.
+get_all: Takes a name fragment and type as strings, and returns a list of dictionaries containing short summary data about all objects of that type that contain that name fragment. Users can be retrieved using their emails.
 
-get_id: Takes a name and a type as strings, and returns the string Id of that object (for releases, the script will also request version). Users can be retrieved using their emails.
+get_object: Takes a name/fullName/email and type as strings, and returns a dictionary for the corresponding object containing all available data (for releases, the script will also request version). Users can be retrieved using their emails.
 
-get_field: Takes a name, field and a type as strings), and returns the specified field of that object (for releases, the script will also request version). The return type will be the type of that field. Users can be retrieved using their emails.
+get_id: Takes a name/fullName/email and a type as strings, and returns the string Id of that object (for releases, the script will also request version). Users can be retrieved using their emails.
+
+get_field: Takes a name/fullName/email, a field and a type as strings), and returns the specified field of that object (for releases, the script will also request version). The return type will be the type of that field.
 
 
