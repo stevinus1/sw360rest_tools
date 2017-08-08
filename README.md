@@ -6,8 +6,8 @@ These are scripts intended to be used to automate workflow when using the sw360 
 
 POST requests can be made by creating a file containing formatted data for all the objects you want to add to sw360. Templates for adding different types, with required fields labelled, are below.
 
-- Component  
-```{  
+Component  
+{  
   "type": "component (required)",  
   "name": "COMPONENT_NAME (required)",  
   "description": "Component description",  
@@ -15,10 +15,10 @@ POST requests can be made by creating a file containing formatted data for all t
   "vendors": ["VENDOR_ID1", "VENDOR_ID2"],  
   "ownerAccountingUnit": "OWNER_ACCOUNTING_UNIT",  
   "ownerGroup": "OWNER_GROUP"  
-}```
+}
 
-- Project  
-```{  
+Project  
+{  
   "type": "project (required)",  
   "name": "PROJECT_NAME (required)",  
   "version": "PROJECT_VERSION",  
@@ -27,10 +27,10 @@ POST requests can be made by creating a file containing formatted data for all t
   "businessUnit": "BUSINESS_UNIT",  
   "externalIds": {"DESCRIPTION1": "ID1", "DESCRIPTION2": "ID2"},  
   "releaseIdToUsage": {}  
-}```
+}
 
-- Release  
-```{  
+Release  
+{  
   "type": "release" (required),  
   "name": "RELEASE_NAME" (required),  
   "version": "RELEASE_VERSION" (required),  
@@ -40,23 +40,23 @@ POST requests can be made by creating a file containing formatted data for all t
   "externalIds": {"DESCRIPTION1": "ID1", "DESCRIPTION2": "ID2"},  
   "mainLicenseIds": ["ID1", "ID2"],  
   "clearingState": "CLEARING_STATE"  
-}```
+}
 
-- License  
-```{  
+License  
+{  
   "type": "license" (required),  
   "fullName": "LICENSE_NAME" (required),  
   "shortName": "L_N" (required),  
   "text": "License text"  
-}```
+}
 
-- Vendor  
-```{  
+Vendor  
+{  
   "type": "vendor" (required),  
   "fullName": "VENDOR_NAME" (required),  
   "shortName": "V_N" (required),  
   "url": "VENDOR_URL" (required)  
-}```
+}
 
 Users can't be added via the REST interface.
 
