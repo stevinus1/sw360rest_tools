@@ -30,13 +30,14 @@ if (dictionaries == []):
     print("You haven't provided any valid objects to POST.")
     sys.exit()
 for di in dictionaries:
-    if (not global_vars.type_format_classes.has_key(di['type'].lower())):
-        print "Please specify valid types for all your objects."
-        sys.exit()
-    elif (di['type'].lower() == 'release'):
-        releases.append(di)
-    else:
-        POST_objects.append(di)
+    if (di.has_key('type')):
+        if (not global_vars.type_format_classes.has_key(di['type'].lower())):
+            print di['type'] + " is not a valid type. Please specify valid types for all objects."
+            sys.exit()
+        elif (di['type'].lower() == 'release'):
+            releases.append(di)
+        else:
+            POST_objects.append(di)
 
 # Adding in any missing fields to dictionaries and making POST requests
 if (releases != []):
@@ -49,7 +50,7 @@ for release in releases:
             component_id = GET.get_id(component['name'], 'component')
             has_component = 1
     if (has_component == 0):
-        print "A release cannot exist independently of a component of the same name.\n\n"
+        print "No component with name " + release['name'] + "A release cannot exist independently of a component of the same name.\n\n"
         break
     if (global_vars.type_format_classes['release'].format_post(release, component_id) == 1):
         r = requests.post(url, headers=global_vars.headers, json=release)
@@ -63,7 +64,6 @@ for obj in POST_objects:
     url = "http://localhost:8091/api/" + type + "s"
     if (global_vars.type_format_classes[type].format_post(obj) == 1):
         r = requests.post(url, headers=global_vars.headers, json=obj)
-        else:
         if (r.status_code == 201):
             message = obj[global_vars.type_ids[type]] + " (" + type + ")" + ": POST method was successful\n\n"
             print message
