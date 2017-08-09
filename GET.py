@@ -1,5 +1,4 @@
 import requests, re, sys, json, ast
-import format_project_data, format_component_data, format_vendor_data, format_release_data, format_license_data, format_user_data
 
 successful_import = 0
 while successful_import == 0:
@@ -30,7 +29,6 @@ def get_all (name_fragment, type):
         return None
     url = "http://localhost:8091/api/" + type.lower() + "s"
     r = requests.get(url, headers=global_vars.headers)
-    print r.text
     if (r.status_code != 200):
         print "GET method was unsuccessful.\n" + r.text
         return None
@@ -40,7 +38,9 @@ def get_all (name_fragment, type):
     objects = json.JSONDecoder.decode(global_vars.decoder, r.text)
     for obj in objects['_embedded']['sw360:'+type+'s']:
         if (name_fragment.lower() in obj[global_vars.type_ids[type]].lower()):
-            results.append(get_object(obj[global_vars.type_ids[type]], type))
+            result_obj = get_object(obj[global_vars.type_ids[type]], type)
+            if (result_obj is not None):
+                results.append(result_obj)
     return results
 
 # Returns a single object in dictionary form of a given name that matches a given type
@@ -58,7 +58,8 @@ def get_object (name, type, version = None):
     url = "http://localhost:8091/api/" + type.lower() + "s/" + id
     r = requests.get(url, headers=global_vars.headers)
     if (r.status_code != 200):
-        print "GET method was unsuccessful.\n" + r.text
+        message = name + " (" + type + "): " + "GET method was unsuccessful.\n" + r.text
+        print message
         return None
 
     # Returning object
@@ -75,7 +76,8 @@ def get_id (name, type, version = None):
     url = "http://localhost:8091/api/" + type.lower() + "s"
     r = requests.get(url, headers=global_vars.headers)
     if (r.status_code != 200):
-        print "GET method was unsuccessful.\n" + r.text
+        message = name + " (" + type + "): " + "GET method was unsuccessful.\n" + r.text
+        print message
         return None
 
     # Finding specified object
