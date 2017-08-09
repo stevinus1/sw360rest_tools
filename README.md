@@ -62,7 +62,7 @@ Users can't be added via the REST interface.
 
 ### GET:
 
-All GET methods are only capable of returning the information shown in the templates above.
+All GET methods are only capable of returning the information shown in the templates above. All searches by name are case insensitive.
 
 - get_all: Takes a name fragment and type as strings, and returns a list of dictionaries containing short summary data about all objects of that type that contain that name fragment.
 

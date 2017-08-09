@@ -1,4 +1,4 @@
-import json
+import json, global_vars
 
 # Putting license data in dictionary structure
 def format_post (license):

@@ -1,4 +1,4 @@
-import GET, json
+import GET, json, global_vars
 
 # Putting project data in dictionary structure
 def format_post (vendor):

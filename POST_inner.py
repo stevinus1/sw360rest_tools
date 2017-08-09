@@ -19,66 +19,26 @@ except IOError as err:
     err.message = "IO Error: " + err.strerror
     raise IOError(err.message)
 
-# Making lists of components and projects
-items = []
-dicts = []
-components = []
-projects = []
-vendors = []
+# Making lists of objects
+dictionaries = []
 releases = []
-licenses = []
+POST_objects = []
 items = re.findall('(\{([^\}]*?\n+[^\}]*?)*\})', info)
 for item in items:
-    dicts.append(ast.literal_eval(item[0]))
-for di in dicts:
-    if di['type'].lower() == 'project':
-        projects.append(di)
-    elif di['type'].lower() == 'component':
-        components.append(di)
-    elif di['type'].lower() == 'vendor':
-        vendors.append(di)
-    elif di['type'].lower() == 'release':
-        releases.append(di)
-    elif di['type'].lower() == 'license':
-        licenses.append(di)
-    else:
-        print("Please specify valid types for all your objects.")
-        sys.exit()
-if (dicts == []):
+    dictionaries.append(ast.literal_eval(item[0]))
+if (dictionaries == []):
     print("You haven't provided any valid objects to POST.")
     sys.exit()
-    
-# Adding in any missing fields to dictionaries and making POST requests for projects
-for project in projects:
-    url = "http://localhost:8091/api/projects"
-    if (format_project_data.format_post(project) == 1):
-        r = requests.post(url, headers=global_vars.headers, json=project)
-        if (r.status_code == 201):
-            print project['name'] + " (Project)" + ": POST method was successful\n\n"
-        else:
-            print project['name'] + " (Project)" + ": POST method was unsuccessful\n" + r.text + "\n\n"
+for di in dictionaries:
+    if (not global_vars.type_format_classes.has_key(di['type'].lower())):
+        print "Please specify valid types for all your objects."
+        sys.exit()
+    elif (di['type'].lower() == 'release'):
+        releases.append(di)
+    else:
+        POST_objects.append(di)
 
-# Adding in any missing fields to dictionaries and making POST requests for vendors
-for vendor in vendors:
-    url = "http://localhost:8091/api/vendors"
-    if (format_vendor_data.format_post(vendor) == 1):
-        r = requests.post(url, headers=global_vars.headers, json=vendor)
-        if (r.status_code == 201):
-            print vendor['shortName'] + " (Vendor)" + ": POST method was successful\n\n"
-        else:
-            print vendor['shortName'] + " (Vendor)" + ": POST method was unsuccessful\n" + r.text + "\n\n"
-
-# Adding in any missing fields to dictionaries and making POST requests for components
-for component in components:
-    url = "http://localhost:8091/api/components"
-    if (format_component_data.format_post(component) == 1):
-        r = requests.post(url, headers=global_vars.headers, json=component)
-        if (r.status_code == 201):
-            print component['name'] + " (Component)" + ": POST method was successful\n\n"
-        else:
-            print component['name'] + " (Component)" +  ": POST method was unsuccessful\n" + r.text + "\n\n"
-
-# Adding in any missing fields to dictionaries and making POST requests for releases
+# Adding in any missing fields to dictionaries and making POST requests
 if (releases != []):
     stored_components = GET.get_all('', 'component')
 for release in releases:
@@ -91,19 +51,22 @@ for release in releases:
     if (has_component == 0):
         print "A release cannot exist independently of a component of the same name.\n\n"
         break
-    if (format_release_data.format_post(release, component_id) == 1):
+    if (global_vars.type_format_classes['release'].format_post(release, component_id) == 1):
         r = requests.post(url, headers=global_vars.headers, json=release)
         if (r.status_code == 201):
             print release['name'] + " (Release)" + ": POST method was successful\n\n"
         else:
             print release['name'] + " (Release)" + ": POST method was unsuccessful\n" + r.text + "\n\n"
 
-# Adding in any missing fields to dictionaries and making POST requests for licenses
-for license in licenses:
-    url = "http://localhost:8091/api/licenses"
-    if (format_license_data.format_post(license) == 1):
-        r = requests.post(url, headers=global_vars.headers, json=license)
-        if (r.status_code == 201):
-            print license['shortName'] + " (License)" +  ": POST method was successful\n\n"
+for obj in POST_objects:
+    type = obj['type'].lower()
+    url = "http://localhost:8091/api/" + type + "s"
+    if (global_vars.type_format_classes[type].format_post(obj) == 1):
+        r = requests.post(url, headers=global_vars.headers, json=obj)
         else:
-            print license['shortName'] + " (License)" + ": POST method was unsuccessful\n" + r.text + "\n\n"
+        if (r.status_code == 201):
+            message = obj[global_vars.type_ids[type]] + " (" + type + ")" + ": POST method was successful\n\n"
+            print message
+        else:
+            message = obj[global_vars.type_ids[type]] + " (" + type + ")" + ": POST method was unsuccessful\n" + r.text + "\n\n"
+            print message
