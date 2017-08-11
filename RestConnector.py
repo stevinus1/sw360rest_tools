@@ -1,10 +1,11 @@
 import re, json, requests, sys, ast
-from FormatLicenseData import FormatLicenseData
-from FormatVendorData import FormatVendorData
-from FormatUserData import FormatUserData
-from FormatComponentData import FormatComponentData
-from FormatReleaseData import FormatReleaseData
-from FormatProjectData import FormatProjectData
+
+from Formatters.FormatLicenseData import FormatLicenseData
+from Formatters.FormatVendorData import FormatVendorData
+from Formatters.FormatUserData import FormatUserData
+from Formatters.FormatComponentData import FormatComponentData
+from Formatters.FormatReleaseData import FormatReleaseData
+from Formatters.FormatProjectData import FormatProjectData
 
 class RestConnector:
 
@@ -128,16 +129,15 @@ class RestConnector:
         
         # Making lists of objects
         dictionaries = []
-        items = re.split('\}\s*\{|\}\s*$|^\{', info)
-        for item in items[1:len(items)-1]:
-            dictionary = ast.literal_eval("{" + item + "}")
-            if (not dictionary.has_key('type')):
+        objects = json.JSONDecoder.decode(decoder, info)
+        for obj in objects:
+            if (not obj.has_key('type')):
                 print "You have not specified a type for all of your objects.\n"
                 sys.exit()
-            elif (not type_identifiers.has_key(dictionary['type'].lower())):
-                print dictionary['type'] + " is not a valid type. The corresponding object will not be posted.\n"
+            elif (not type_identifiers.has_key(obj['type'].lower())):
+                print obj['type'] + " is not a valid type. The corresponding object will not be posted.\n"
             else:
-                dictionaries.append(dictionary)
+                dictionaries.append(obj)
         if (dictionaries == []):
             print("You haven't provided any valid objects to POST.")
             return None

@@ -1,10 +1,10 @@
-# sw360 rest Example Client
+# sw360 REST Example Client
 
 These are scripts intended to be used to automate workflow when using the sw360 REST interface. The scripts require the sw360 REST interface to run, as well as the python requests module.
 
 ### POST:
 
-- format_objects_from_file: Takes a local file path containing valid JSON separated by whitespace (NOT commas OK thanks) and formats it to python dictionaries.
+- format_objects_from_file: Takes a local file path containing valid JSON objects and formats it to POSTable python dictionaries.
 
 - post_objects: Takes a list of dictionaries and posts all the objects contained therein.
 

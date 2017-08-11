@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, json
 from RestAuthenticator import RestAuthenticator
 from RestConnector import RestConnector
 
@@ -8,8 +8,13 @@ if (authenticator.get_headers() == 1):
 else:
     sys.exit()
 
-dump_file = open('sw360db_dump', 'w+')
+
+sw360_objects = []
 for obj_type in connector.type_formatters.keys():
     for obj in connector.get_all_objects(obj_type):
-        dump_file.write(str(obj)+'\n')
+        sw360_objects.append(obj)
+
+encoder = json.JSONEncoder()
+dump_file = open('sw360db_dump', 'w+')
+dump_file.write(json.JSONEncoder.encode(encoder, sw360_objects))
 dump_file.close()
