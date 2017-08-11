@@ -4,7 +4,11 @@ These are scripts intended to be used to automate workflow when using the sw360 
 
 ### POST:
 
-POST requests can be made by creating a file containing formatted data for all the objects you want to add to sw360. Templates for adding different types, with required fields labelled, are below.
+- format_objects_from_file: Takes a local file path containing valid JSON separated by whitespace (NOT commas OK thanks) and formats it to python dictionaries.
+
+- post_objects: Takes a list of dictionaries and posts all the objects contained therein.
+
+For successful POST methods, the following templates must be followed, with all required fields included:
 
 Component  
 {  
@@ -64,12 +68,12 @@ Users can't be added via the REST interface.
 
 All GET methods are only capable of returning the information shown in the templates above. All searches by name are case insensitive.
 
-- get_all: Takes a name fragment and type as strings, and returns a list of dictionaries containing short summary data about all objects of that type that contain that name fragment.
+- get_all: Takes a type as a string, and returns a list of dictionaries containing short summary data about all objects of that type.
 
-- get_object: Takes a name/fullName/email and type as strings, and returns a dictionary for the corresponding object containing all available data (for releases, the script will also request version).
+- get_object_by_name: Takes a name/fullName/email and type as strings, and returns a dictionary for the corresponding object (for releases, the script will also request version).
 
-- get_id: Takes a name/fullName/email and a type as strings, and returns the string Id of that object (for releases, the script will also request version).
+- get_object_by_id: Takes an Id and type as strings, and returns a dictionary for the corresponding object (for releases, the script will also request version).
 
-- get_field: Takes a name/fullName/email, a field and a type as strings, and returns the specified field of that object (for releases, the script will also request version). The return type will be the type of that field.
+- get_id_by_name: Takes a name/fullName/email and a type as strings, and returns the string Id of that object (for releases, the script will also request version).
 
 

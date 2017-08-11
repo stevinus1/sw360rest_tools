@@ -1,4 +1,4 @@
-import sys
+import sys, os
 from RestAuthenticator import RestAuthenticator
 from RestConnector import RestConnector
 
@@ -8,7 +8,8 @@ if (authenticator.get_headers() == 1):
 else:
     sys.exit()
 
-data_dump = ""
-
-for obj_type in RestConnector.type_identifiers.keys():
-    data_dump = data_dump + str(connector.get_all_objects(connector, obj_type))
+dump_file = open('sw360db_dump', 'w+')
+for obj_type in connector.type_formatters.keys():
+    for obj in connector.get_all_objects(obj_type):
+        dump_file.write(str(obj)+'\n')
+dump_file.close()

@@ -10,3 +10,4 @@ header.pyc
 global_vars.pyc
 RestConnector.pyc
 RestAuthenticator.pyc
+sw360db_dump

@@ -15,7 +15,7 @@ class FormatVendorData:
             print "Please specify an url for your vendor.\n\n"
             return 0
         elif (self.connector.get_object_by_name(vendor['fullName'], 'vendor') is not None):
-            print "There is already a vendor with the name " + vendor['fullName']
+            print vendor['fullName'] + " (vendor): There is already a vendor with that name\n" 
             return 0
         else:
             return 1

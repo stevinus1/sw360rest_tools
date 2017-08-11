@@ -33,7 +33,7 @@ class RestConnector:
 
         # Getting list of ids
         if (not type_identifiers.has_key(obj_type)):
-            print obj_type + " is not a valid type."
+            print obj_type + " is not a valid type.\n"
             return None
         get_url = self.url + obj_type.lower() + "s"
         r = requests.get(get_url, headers=self.headers)
@@ -56,7 +56,7 @@ class RestConnector:
 
         # Getting id of that object
         if (not type_identifiers.has_key(obj_type)):
-            print obj_type + " is not a valid type."
+            print obj_type + " is not a valid type.\n"
             return None
         obj_id = self.get_id_by_name(name, obj_type, version)
         if (obj_id is None):
@@ -70,12 +70,12 @@ class RestConnector:
         
         # Making GET request
         if (not type_identifiers.has_key(obj_type)):
-            print obj_type + " is not a valid type."
+            print obj_type + " is not a valid type.\n"
             return None
         get_url = self.url + obj_type.lower() + "s/" + obj_id
         r = requests.get(get_url, headers=self.headers)
         if (r.status_code != 200):
-            message = name + " (" + obj_type + "): " + "GET method was unsuccessful.\n" + r.text
+            message = obj_id + " (" + obj_type + "): " + "GET method was unsuccessful.\n" + r.text
             print message
             return None
 
@@ -84,63 +84,55 @@ class RestConnector:
         return self.type_formatters[obj_type].get_format(dictionary)
 
     # Returning string id of object w/ given name
-    def get_id_by_name(self, name, type, version = None):
+    def get_id_by_name(self, name, obj_type, version = None):
         
         # Getting list of objects of that type
-        if (not type_identifiers.has_key(type)):
-            print type + " is not a valid type."
+        if (not type_identifiers.has_key(obj_type)):
+            print obj_type + " is not a valid type."
             return None
-        get_url = self.url + type.lower() + "s"
+        get_url = self.url + obj_type.lower() + "s"
         r = requests.get(get_url, headers=self.headers)
         if (r.status_code != 200):
-            message = name + " (" + type + "): " + "GET method was unsuccessful.\n" + r.text
+            message = name + " (" + obj_type + "): " + "GET method was unsuccessful.\n" + r.text
             print message
             return None
         dictionaries = json.JSONDecoder.decode(decoder,r.text)
-        dictionaries = dictionaries['_embedded']['sw360:'+type+'s']
+        dictionaries = dictionaries['_embedded']['sw360:'+obj_type+'s']
 
         # Finding specified object
         sw360_object = None
         for dictionary in dictionaries:
-            if (type.lower() == 'release'):
+            if (obj_type.lower() == 'release'):
                 if (version is None):
                     version = raw_input("Please specify the version of your release: ")
                 if(dictionary['name'].lower() == name.lower()) and (dictionary['version'].lower() == version.lower()):
                     sw360_object = str(dictionary['_links'])
             else:
-                if(dictionary[type_identifiers[type]].lower() == name.lower()):
+                if(dictionary[type_identifiers[obj_type]].lower() == name.lower()):
                     sw360_object = str(dictionary['_links'])
 
         # Getting id
         if (sw360_object is not None):
             idMatch = re.search(regex_id, sw360_object)
-            id = idMatch.group(1)
-            return id
+            obj_id = idMatch.group(1)
+            return obj_id
         else:
-            print "No object with name " + name + " found."
             return None
 
     # Reads in file of valid JSON, returns list of dictionaries
     def format_objects_from_file (self, filepath):
 
         # Reading in information
-        try:
-            file = open(filepath, "r")
-            info = file.read()
-        except OSError as err:
-            err.message = "OS Error: " + err.strerror
-            raise OSError(err.message)
-        except IOError as err:
-            err.message = "IO Error: " + err.strerror
-            raise IOError(err.message)
+        file = open(filepath, "r")
+        info = file.read()
         
         # Making lists of objects
         dictionaries = []
-        items = re.findall('(\{[^\}]*\})', info)
-        for item in items:
-            dictionary = ast.literal_eval(item)
+        items = re.split('\}\s*\{|\}\s*$|^\{', info)
+        for item in items[1:len(items)-1]:
+            dictionary = ast.literal_eval("{" + item + "}")
             if (not dictionary.has_key('type')):
-                print "You have not specified a type for all of your objects."
+                print "You have not specified a type for all of your objects.\n"
                 sys.exit()
             elif (not type_identifiers.has_key(dictionary['type'].lower())):
                 print dictionary['type'] + " is not a valid type. The corresponding object will not be posted.\n"
@@ -153,6 +145,9 @@ class RestConnector:
 
     # Takes list of dictionaries and makes POST requests
     def post_objects (self, POST_objects):
+
+        # Sorting list by type means components will be posted before their corresponding releases - bit of a hack
+        POST_objects = sorted(POST_objects, key=lambda k: k['type'])
 
         # Making post requests
         for obj in POST_objects:

@@ -20,10 +20,10 @@ class FormatProjectData:
         if (project.has_key("name")):
             for key in default_dict.keys():
                 project.setdefault(key, default_dict[key])
-                return 1
         else:
             print "Please specify a name for your project."
             return 0
+        return 1
 
     # Interpreting GET request text
     def get_format(self, dictionary):

@@ -4,8 +4,8 @@ class FormatReleaseData:
 
     global default_dict
     default_dict = {
-        "componentId": None,
-        "vendorId": None,
+        "componentId": "",
+        "vendorId": "",
         "externalIds": {},
         "mainLicenseIds": [],
         "clearingState": "NEW_CLEARING"
