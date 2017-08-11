@@ -3,9 +3,9 @@ from RestAuthenticator import RestAuthenticator
 from RestConnector import RestConnector
 
 parser = argparse.ArgumentParser()
-help_message_positional = '''paths to files containing objects to be uploaded'''
-parser.add_argument('filepaths', nargs='*', help=help_message_positional)
-filepaths = parser.parse_args().filepaths
+help_message1 = 'paths to files containing objects to be uploaded'
+parser.add_argument('filepaths', nargs='*', help=help_message1)
+paths = parser.parse_args().filepaths
 
 authenticator = RestAuthenticator('/home/matt/sw360/sw360rest')
 if (authenticator.get_headers() == 1):
@@ -13,7 +13,7 @@ if (authenticator.get_headers() == 1):
 else:
     sys.exit()
 
-if (filepaths != []):
-    for filepath in filepaths:
-        dictionaries = connector.format_objects_from_file(filepath)
+if (paths != []):
+    for path in paths:
+        dictionaries = connector.format_objects_from_file(path)
         connector.post_objects(dictionaries)

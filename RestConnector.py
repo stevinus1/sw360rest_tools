@@ -37,7 +37,7 @@ class RestConnector:
 
         
     # Returns list of dictionaries of all objects of a type
-    def get_all_objects(self, obj_type, write_to_file = False, filepath=""):
+    def get_all_objects(self, obj_type, write_to_file = False):
 
         # Getting list of ids
         if (not self.type_identifiers.has_key(obj_type)):
@@ -58,19 +58,19 @@ class RestConnector:
             if (obj is not None):
                 objects.append(obj)
         if (write_to_file == True):
-            self.write_objects_to_file(objects, filepath)
+            self.write_objects_to_file(objects)
         return objects
 
     # Writes list of objects to file
-    def write_objects_to_file(self, objects, filepath):
-        if (filepath == ""):
-            filepath = raw_input('Where to write sw360 object data to?')
-        data_file = open(filepath, 'a+')
+    def write_objects_to_file(self, objects):
+        if (self.filepath == ""):
+            self.filepath = raw_input('Where to write sw360 object data to?')
+        data_file = open(self.filepath, 'a+')
         data_file.write(json.JSONEncoder.encode(encoder, objects))
         data_file.close()
         
     # Returns dictionary of object w/ given name
-    def get_object_by_name(self, name, obj_type, version = None, write_to_file = False, filepath = ""):
+    def get_object_by_name(self, name, obj_type, version = None, write_to_file = False):
 
         # Getting id of that object
         if (not self.type_identifiers.has_key(obj_type)):
@@ -83,11 +83,11 @@ class RestConnector:
         # Returning object
         obj = self.get_object_by_id(obj_id, obj_type)
         if (write_to_file == True):
-            self.write_objects_to_file([obj], filepath)
+            self.write_objects_to_file(obj)
         return obj
     
     # Returns dictionary of object w/ given id
-    def get_object_by_id (self, obj_id, obj_type, write_to_file = False, filepath = ""):
+    def get_object_by_id (self, obj_id, obj_type, write_to_file = False):
         
         # Making GET request
         if (not self.type_identifiers.has_key(obj_type)):
@@ -104,7 +104,7 @@ class RestConnector:
         dictionary = json.JSONDecoder.decode(decoder, r.text)
         obj = self.type_formatters[obj_type].get_format(dictionary)
         if (write_to_file == True):
-            self.write_objects_to_file([obj], filepath)
+            self.write_objects_to_file(obj)
         return obj
 
     # Returning string id of object w/ given name
@@ -149,11 +149,13 @@ class RestConnector:
         # Reading in information
         file = open(filepath, "r")
         info = file.read()
+        POST_objects = json.JSONDecoder.decode(decoder, info)
+        if (type(POST_objects).__name__ != 'list'):
+            POST_objects = [POST_objects]
         
-        # Making lists of objects
+        # Checking objects are valid
         dictionaries = []
-        objects = json.JSONDecoder.decode(decoder, info)
-        for obj in objects:
+        for obj in POST_objects:
             if (not obj.has_key('type')):
                 print "You have not specified a type for all of your objects.\n"
                 sys.exit()
