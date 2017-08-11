@@ -4,14 +4,13 @@ These are scripts intended to be used to automate workflow when using the sw360 
 
 ### POST:
 
-- format_objects_from_file: Takes a local file path containing valid JSON objects and formats it to POSTable python dictionaries.
+- format_objects_from_file: Takes a local file path containing valid JSON and formats it to sw360 POSTable python dictionaries.
 
-- post_objects: Takes a list of dictionaries and posts all the objects contained therein.
+- post_objects: Takes a list of formatted dictionaries and posts all the objects contained therein.
 
-For successful POST methods, the following templates must be followed, with all required fields included:
+For successful POST methods, the following template must be followed, with all required fields included:
 
-Component  
-{  
+[{  
   "type": "component (required)",  
   "name": "COMPONENT_NAME (required)",  
   "description": "Component description",  
@@ -19,9 +18,7 @@ Component
   "vendors": ["VENDOR_ID1", "VENDOR_ID2"],  
   "ownerAccountingUnit": "OWNER_ACCOUNTING_UNIT",  
   "ownerGroup": "OWNER_GROUP"  
-}
-
-Project  
+},
 {  
   "type": "project (required)",  
   "name": "PROJECT_NAME (required)",  
@@ -31,9 +28,7 @@ Project
   "businessUnit": "BUSINESS_UNIT",  
   "externalIds": {"DESCRIPTION1": "ID1", "DESCRIPTION2": "ID2"},  
   "releaseIdToUsage": {}  
-}
-
-Release  
+},  
 {  
   "type": "release" (required),  
   "name": "RELEASE_NAME" (required),  
@@ -44,23 +39,19 @@ Release
   "externalIds": {"DESCRIPTION1": "ID1", "DESCRIPTION2": "ID2"},  
   "mainLicenseIds": ["ID1", "ID2"],  
   "clearingState": "CLEARING_STATE"  
-}
-
-License  
+},  
 {  
   "type": "license" (required),  
   "fullName": "LICENSE_NAME" (required),  
   "shortName": "L_N" (required),  
   "text": "License text"  
-}
-
-Vendor  
+},  
 {  
   "type": "vendor" (required),  
   "fullName": "VENDOR_NAME" (required),  
   "shortName": "V_N" (required),  
   "url": "VENDOR_URL" (required)  
-}
+}]
 
 Users can't be added via the REST interface.
 

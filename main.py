@@ -3,8 +3,8 @@ from RestAuthenticator import RestAuthenticator
 from RestConnector import RestConnector
 
 parser = argparse.ArgumentParser()
-help_message = 'paths to files containing objects to be uploaded'
-parser.add_argument('filepaths', nargs='*', help=help_message)
+help_message_positional = '''paths to files containing objects to be uploaded'''
+parser.add_argument('filepaths', nargs='*', help=help_message_positional)
 filepaths = parser.parse_args().filepaths
 
 authenticator = RestAuthenticator('/home/matt/sw360/sw360rest')

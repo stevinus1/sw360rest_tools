@@ -13,10 +13,10 @@ class RestConnector:
     regex_id = '''["|']http://.*/([^\s\{\}]*)["|']'''
     global decoder
     decoder = json.JSONDecoder()
-    
+    global encoder
+    encoder = json.JSONEncoder()
     global type_identifiers
-    type_identifiers = {'license': 'fullName', 'vendor': 'fullName', 'component': 'name', 'release': 'name', 'project': 'name', 'user': 'email'}
-
+    
 
     def __init__(self, url, headers):
         self.url = url
@@ -28,12 +28,19 @@ class RestConnector:
                        'project': FormatProjectData(),
                        'user': FormatUserData()
                        }
+        self.type_identifiers = {'license': 'fullName',
+                                 'vendor': 'fullName',
+                                 'component': 'name',
+                                 'release': 'name',
+                                 'project': 'name',
+                                 'user': 'email'}
+
         
     # Returns list of dictionaries of all objects of a type
-    def get_all_objects(self, obj_type):
+    def get_all_objects(self, obj_type, write_to_file = False, filepath=""):
 
         # Getting list of ids
-        if (not type_identifiers.has_key(obj_type)):
+        if (not self.type_identifiers.has_key(obj_type)):
             print obj_type + " is not a valid type.\n"
             return None
         get_url = self.url + obj_type.lower() + "s"
@@ -50,13 +57,23 @@ class RestConnector:
             obj = self.get_object_by_id(obj_id, obj_type)
             if (obj is not None):
                 objects.append(obj)
+        if (write_to_file == True):
+            self.write_objects_to_file(objects, filepath)
         return objects
 
+    # Writes list of objects to file
+    def write_objects_to_file(self, objects, filepath):
+        if (filepath == ""):
+            filepath = raw_input('Where to write sw360 object data to?')
+        data_file = open(filepath, 'a+')
+        data_file.write(json.JSONEncoder.encode(encoder, objects))
+        data_file.close()
+        
     # Returns dictionary of object w/ given name
-    def get_object_by_name(self, name, obj_type, version = None):
+    def get_object_by_name(self, name, obj_type, version = None, write_to_file = False, filepath = ""):
 
         # Getting id of that object
-        if (not type_identifiers.has_key(obj_type)):
+        if (not self.type_identifiers.has_key(obj_type)):
             print obj_type + " is not a valid type.\n"
             return None
         obj_id = self.get_id_by_name(name, obj_type, version)
@@ -64,13 +81,16 @@ class RestConnector:
             return None
 
         # Returning object
-        return self.get_object_by_id(obj_id, obj_type)
+        obj = self.get_object_by_id(obj_id, obj_type)
+        if (write_to_file == True):
+            self.write_objects_to_file([obj], filepath)
+        return obj
     
     # Returns dictionary of object w/ given id
-    def get_object_by_id (self, obj_id, obj_type):
+    def get_object_by_id (self, obj_id, obj_type, write_to_file = False, filepath = ""):
         
         # Making GET request
-        if (not type_identifiers.has_key(obj_type)):
+        if (not self.type_identifiers.has_key(obj_type)):
             print obj_type + " is not a valid type.\n"
             return None
         get_url = self.url + obj_type.lower() + "s/" + obj_id
@@ -82,13 +102,16 @@ class RestConnector:
 
         # Returning object
         dictionary = json.JSONDecoder.decode(decoder, r.text)
-        return self.type_formatters[obj_type].get_format(dictionary)
+        obj = self.type_formatters[obj_type].get_format(dictionary)
+        if (write_to_file == True):
+            self.write_objects_to_file([obj], filepath)
+        return obj
 
     # Returning string id of object w/ given name
     def get_id_by_name(self, name, obj_type, version = None):
         
         # Getting list of objects of that type
-        if (not type_identifiers.has_key(obj_type)):
+        if (not self.type_identifiers.has_key(obj_type)):
             print obj_type + " is not a valid type."
             return None
         get_url = self.url + obj_type.lower() + "s"
@@ -109,7 +132,7 @@ class RestConnector:
                 if(dictionary['name'].lower() == name.lower()) and (dictionary['version'].lower() == version.lower()):
                     sw360_object = str(dictionary['_links'])
             else:
-                if(dictionary[type_identifiers[obj_type]].lower() == name.lower()):
+                if(dictionary[self.type_identifiers[obj_type]].lower() == name.lower()):
                     sw360_object = str(dictionary['_links'])
 
         # Getting id
@@ -134,7 +157,7 @@ class RestConnector:
             if (not obj.has_key('type')):
                 print "You have not specified a type for all of your objects.\n"
                 sys.exit()
-            elif (not type_identifiers.has_key(obj['type'].lower())):
+            elif (not self.type_identifiers.has_key(obj['type'].lower())):
                 print obj['type'] + " is not a valid type. The corresponding object will not be posted.\n"
             else:
                 dictionaries.append(obj)
@@ -143,10 +166,12 @@ class RestConnector:
             return None
         return dictionaries
 
-    # Takes list of dictionaries and makes POST requests
+    # Takes a list dictionaries and makes POST requests
     def post_objects (self, POST_objects):
 
-        # Sorting list by type means components will be posted before their corresponding releases - bit of a hack
+        # Making sure input is sorted list (sorting means components posted before releases)
+        if (type(POST_objects).__name__ != 'list'):
+            POST_objects = [POST_objects]
         POST_objects = sorted(POST_objects, key=lambda k: k['type'])
 
         # Making post requests
@@ -156,8 +181,9 @@ class RestConnector:
             if (self.type_formatters[obj_type].post_format(obj) == 1):
                 r = requests.post(post_url, headers=self.headers, json=obj)
                 if (r.status_code == 201):
-                    message = obj[type_identifiers[obj_type]] + " (" + obj_type + ")" + ": POST method was successful\n\n"
+                    message = obj[self.type_identifiers[obj_type]] + " (" + obj_type + ")" + ": POST method was successful\n\n"
                     print message
                 else:
-                    message = obj[type_identifiers[obj_type]] + " (" + obj_type + ")" + ": POST method was unsuccessful\n" + r.text + "\n\n"
+                    message = obj[self.type_identifiers[obj_type]] + " (" + obj_type + ")" + ": POST method was unsuccessful\n" + r.text + "\n\n"
                     print message
+
