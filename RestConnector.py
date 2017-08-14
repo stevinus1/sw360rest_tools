@@ -37,7 +37,7 @@ class RestConnector:
 
         
     # Returns list of dictionaries of all objects of a type
-    def get_all_objects(self, obj_type, write_to_file = False):
+    def get_all_objects(self, obj_type, write_to_file = False, data_filepath = ""):
 
         # Getting list of ids
         if (not self.type_identifiers.has_key(obj_type)):
@@ -58,19 +58,34 @@ class RestConnector:
             if (obj is not None):
                 objects.append(obj)
         if (write_to_file == True):
-            self.write_objects_to_file(objects)
+            self.write_objects_to_file(objects, data_filepath)
         return objects
 
+    # Returns list of objects that contain a given name fragment
+    def get_objects_by_name_fragment(self, name_frag, write_to_file = False, data_filepath = ""):
+
+        # Getting list of objects
+        objects = []
+        for obj_type in self.type_identifiers.keys():
+            for obj in self.get_all_objects(obj_type):
+                if name_frag in obj[self.type_identifiers[obj_type]]:
+                    objects.append(obj)
+        
+        # Returning list
+        if (write_to_file == True):
+            self.write_objects_to_file(objects, data_filepath)
+        return objects            
+        
     # Writes list of objects to file
-    def write_objects_to_file(self, objects):
-        if (self.filepath == ""):
-            self.filepath = raw_input('Where to write sw360 object data to?')
-        data_file = open(self.filepath, 'a+')
+    def write_objects_to_file(self, objects, filepath):
+        if (filepath == ""):
+            filepath = raw_input('Where to write sw360 object data to? ')
+        data_file = open(filepath, 'a+')
         data_file.write(json.JSONEncoder.encode(encoder, objects))
         data_file.close()
         
     # Returns dictionary of object w/ given name
-    def get_object_by_name(self, name, obj_type, version = None, write_to_file = False):
+    def get_object_by_name(self, name, obj_type, version = None, write_to_file = False, data_filepath = ""):
 
         # Getting id of that object
         if (not self.type_identifiers.has_key(obj_type)):
@@ -83,11 +98,11 @@ class RestConnector:
         # Returning object
         obj = self.get_object_by_id(obj_id, obj_type)
         if (write_to_file == True):
-            self.write_objects_to_file(obj)
+            self.write_objects_to_file(obj, data_filepath)
         return obj
     
     # Returns dictionary of object w/ given id
-    def get_object_by_id (self, obj_id, obj_type, write_to_file = False):
+    def get_object_by_id (self, obj_id, obj_type, write_to_file = False, data_filepath = ""):
         
         # Making GET request
         if (not self.type_identifiers.has_key(obj_type)):
@@ -104,7 +119,7 @@ class RestConnector:
         dictionary = json.JSONDecoder.decode(decoder, r.text)
         obj = self.type_formatters[obj_type].get_format(dictionary)
         if (write_to_file == True):
-            self.write_objects_to_file(obj)
+            self.write_objects_to_file(obj, data_filepath)
         return obj
 
     # Returning string id of object w/ given name

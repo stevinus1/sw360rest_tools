@@ -13,6 +13,7 @@ if (authenticator.get_headers() == 1):
 else:
     sys.exit()
 
+print '\n'
 if (paths != []):
     for path in paths:
         dictionaries = connector.format_objects_from_file(path)
