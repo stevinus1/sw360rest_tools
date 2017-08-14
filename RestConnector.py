@@ -1,11 +1,11 @@
 import re, json, requests, sys, ast
 
-from Formatters.FormatLicenseData import FormatLicenseData
-from Formatters.FormatVendorData import FormatVendorData
-from Formatters.FormatUserData import FormatUserData
-from Formatters.FormatComponentData import FormatComponentData
-from Formatters.FormatReleaseData import FormatReleaseData
-from Formatters.FormatProjectData import FormatProjectData
+from Formatters.Formatters import FormatLicenseData
+from Formatters.Formatters import FormatVendorData
+from Formatters.Formatters import FormatUserData
+from Formatters.Formatters import FormatComponentData
+from Formatters.Formatters import FormatReleaseData
+from Formatters.Formatters import FormatProjectData
 
 class RestConnector:
 

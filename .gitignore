@@ -1,11 +1,7 @@
 GET.pyc
 POST_inner.pyc
-FormatComponentData.pyc
-FormatLicenseData.pyc
-FormatProjectData.pyc
-FormatReleaseData.pyc
-FormatVendorData.pyc
-FormatUserData.pyc
+Formatters.pyc
+FormatTypeData.pyc
 header.pyc
 global_vars.pyc
 RestConnector.pyc
