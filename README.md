@@ -4,8 +4,6 @@ These are scripts intended to be used to automate workflow when using the sw360 
 
 ### POST:
 
-- format_objects_from_file: Takes a local file path containing valid JSON and formats it to sw360 postable python dictionaries.
-
 - post_objects: Takes a list of formatted dictionaries and posts all the objects contained therein.
 
 For successful POST methods, the following template must be followed, with all required fields included:
@@ -57,7 +55,7 @@ Users can't be added via the REST interface.
 
 ### GET:
 
-All GET methods are only capable of returning the information shown in the templates above. All searches by name are case insensitive.
+All GET methods are only capable of returning the information shown in the templates above. All searches by name are case insensitive. All get methods also have optional fields to allow you to specify whether or not to write the data to file, and where to write it to.
 
 - get_all: Takes a type as a string, and returns a list of dictionaries containing short summary data about all objects of that type.
 
@@ -68,6 +66,10 @@ All GET methods are only capable of returning the information shown in the templ
 - get_object_by_id: Takes an Id and type as strings, and returns a dictionary for the corresponding object (for releases, the script will also request version).
 
 - get_id_by_name: Takes a name/fullName/email and a type as strings, and returns the string Id of that object (for releases, the script will also request version).
+
+### Helper Methods
+
+- format_objects_from_file: Takes a local file path containing valid JSON and formats it to sw360 postable python dictionaries.
 
 - write_objects_to_file: Takes a list of dictionaries/single dictionary and a filepath and writes the data to that file in valid JSON. The objects can then be re-uploaded via the post methods.
 
